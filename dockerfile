@@ -1,8 +1,6 @@
 FROM python:3.12-alpine
 
-# 接收从 Action 传过来的版本号
 ARG APP_VERSION
-
 WORKDIR /app
 
 RUN apk add --no-cache git && \
@@ -13,6 +11,9 @@ RUN apk add --no-cache git && \
     apk del git && \
     rm -rf /root/.cache
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 VOLUME /config
-ENTRYPOINT ["autoremove-torrents"]
-CMD ["--conf", "/config/config.yml"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["daemon"]
